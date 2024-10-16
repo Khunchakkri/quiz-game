@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมจีบสาว</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Kanit', sans-serif;
+            background-color: #FFF0F5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        .frame {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .active {
+            display: flex;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #FFB6C1;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background-color: #FF69B4;
+        }
+        .bounce {
+            animation: bounce 0.5s infinite alternate;
+        }
+        @keyframes bounce {
+            to { transform: translateY(-10px); }
+        }
+        .fade-in {
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: red;
+            opacity: 0;
+        }
+        @keyframes floatHeart {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        #frame2 {
+            position: relative;
+            z-index: 2;
+        }
+        #result {
+            font-size: 36px;
+            margin-top: 20px;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 3;
+        }
+        #nextButton {
+            margin-top: 20px;
+            z-index: 3;
+            position: relative;
+        }
+        #frame2 input {
+            font-size: 24px;
+            padding: 10px;
+            border: 2px solid #FFB6C1;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        #frame2 input:focus {
+            border-color: #FF69B4;
+            box-shadow: 0 0 10px #FF69B4;
+        }
+        @keyframes grow {
+            from { transform: scale(1); }
+            to { transform: scale(1.5); }
+        }
+        .grow {
+            animation: grow 1s forwards;
+        }
+        .fullscreen-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 100px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="frame1" class="frame active">
+        <h1>เล่นกับผมหน่อยยยย</h1>
+        <button id="startGame" class="bounce">เริ่มเกมส์</button>
+        <button id="exitGame">ออกจากเกมส์</button>
+        <p>คิดว่าผมจะเล่นมุขเดิมป่ะะะ ↑</p>
+    </div>
+
+    <div id="frame2" class="frame">
+        <p>อักษรภาษาไทย อะไรเอ่ยที่อยู่ใกล้ ข ทางด้านขวา</p>
+        <input type="text" id="answer" maxlength="1">
+        <div id="result"></div>
+    </div>
+
+    <div id="frame3" class="frame">
+        <h2>วันนี้ไม่สบายเลยอ่ะ มาดูแลหน่อยยยย</h2>
+        <button id="doctor">ไปหาหมออ</button>
+        <button id="whatWrong">เป็นอะไรอ่าา</button>
+    </div>
+
+    <div id="frame4" class="frame">
+        <h2>รู้หรือเปล่านี่ตัวอะไรรร 🧸</h2>
+        <button id="bear">หมีไงงง</button>
+        <button id="blurry">รูปมันเบลอๆอ่ะ</button>
+    </div>
+
+    <div id="frame5" class="frame">
+        <h2>จะไปไหนอ่ะะะะ</h2>
+        <button id="whatButton">ห้ะะะ?</button>
+        <button id="stayButton">ไม่ได้ไปไหนน</button>
+    </div>
+
+    <div id="frame6" class="frame">
+        <h2>ให้เลือกระหว่าง ชาเขียวหวาน 50% กับ 100% จะเอาอันไหนน</h2>
+        <button id="tea50_2">หวาน 50%</button>
+        <button id="tea100_2">หวาน 100%</button>
+    </div>
+
+    <div id="frame7" class="frame">
+        <h2>พี่เดินดูทางหน่อยได้ป่ะ</h2>
+        <button id="whyarr">ทำไมอ่ะะะ</button>
+        <button id="watchalways">ดูตลอดดด</button>
+    </div>
+
+    <div id="frame8" class="frame">
+        <h1 id="loadingText">พอแล้ววว</h1>
+        <button id="finalExit">ออกจากเกมส์</button>
+    </div>
+
+    <canvas id="fireworks"></canvas>
+
+    <script>
+        const frames = document.querySelectorAll('.frame');
+        let currentFrame = 0;
+
+        function showFrame(frameIndex) {
+            frames.forEach((frame, index) => {
+                frame.classList.toggle('active', index === frameIndex);
+            });
+            currentFrame = frameIndex;
+            if (frameIndex === 1) {
+                document.getElementById('fireworks').style.display = 'block';
+            } else {
+                document.getElementById('fireworks').style.display = 'none';
+            }
+        }
+
+        document.getElementById('startGame').addEventListener('click', () => showFrame(1));
+
+        document.getElementById('exitGame').addEventListener('click', () => {
+            alert('ไม่อ่ะ ไม่เล่นนน แบร่');
+        });
+
+        document.getElementById('answer').addEventListener('input', (e) => {
+            if (e.target.value.toLowerCase() === 'ช') {
+                const input = document.getElementById('answer');
+                const result = document.getElementById('result');
+                
+                input.style.transition = 'opacity 0.5s';
+                input.style.opacity = '0';
+                
+                setTimeout(() => {
+                    input.style.display = 'none';
+                    result.innerHTML = '<span id="bigCha">ช</span>';
+                    const bigCha = document.getElementById('bigCha');
+                    
+                    bigCha.style.color = 'red';
+                    bigCha.classList.add('grow');
+                    
+                    setTimeout(() => {
+                        const restOfText = document.createElement('span');
+                        restOfText.textContent = 'อบเหมือนกันนนนน';
+                        restOfText.classList.add('fade-in');
+                        result.appendChild(restOfText);
+                        
+                        startFireworks();
+
+                        setTimeout(() => {
+                            const nextButton = document.createElement('button');
+                            nextButton.id = 'nextButton';
+                            nextButton.textContent = 'ไปด่านถัดไป';
+                            nextButton.style.marginTop = '20px';
+                            nextButton.addEventListener('click', () => showFrame(2));
+                            document.getElementById('frame2').appendChild(nextButton);
+                        }, 3000);
+                    }, 1000);
+                }, 500); 
+            }
+        });
+
+        document.getElementById('doctor').addEventListener('click', () => {
+            alert('ไม่อ่ะะ ไปอยู่ในใจพี่ได้เปล่าาา');
+            showHearts();
+            setTimeout(() => showFrame(3), 3000);
+        });
+
+        document.getElementById('whatWrong').addEventListener('click', () => {
+            alert('เป็นของพี่ได้อะเป่าาา');
+            showHearts();
+            setTimeout(() => showFrame(3), 3000);
+        });
+
+        document.getElementById('bear').addEventListener('click', () => {
+            alert('แล้วหมีใจให้เราบ้างอ่ะเป่าาา');
+            showHearts();
+            setTimeout(() => showFrame(4), 3000);
+        });
+
+        document.getElementById('blurry').addEventListener('click', () => {
+            alert('อุ๊บบบส์ เบลอว่ารักแถบบบ??');
+            showHearts();
+            setTimeout(() => showFrame(4), 3000);
+        });
+
+        document.getElementById('whatButton').addEventListener('click', () => {
+            alert('หมายถึงว่าจะน่ารักไปไหนอะคั้บบบบ');
+            showHearts();
+            setTimeout(() => showFrame(5), 3000);
+        });
+
+        document.getElementById('stayButton').addEventListener('click', () => {
+            alert('รู้ครับว่าอยู่ในใจผมตลอดมาาาา');
+            showHearts();
+            setTimeout(() => showFrame(5), 3000);
+        });
+
+        document.getElementById('tea50_2').addEventListener('click', () => {
+            alert('น้องๆ บอกพี่เขากดหวานร้อยดิ้');
+        });
+
+        document.getElementById('tea100_2').addEventListener('click', () => {
+            alert('หวานร้อยแล้วมีหวานใจอะยางงงง');
+            showHearts();
+            setTimeout(() => showFrame(6), 3000);
+        });
+
+        document.getElementById('whyarr').addEventListener('click', () => {
+            alert('มันจะตกมาอยู่ในใจผมน้ะะ');
+            showHearts();
+            setTimeout(() => showFrame(7), 3000);
+        });
+
+        document.getElementById('watchalways').addEventListener('click', () => {
+            alert('ดูใจอะน้ะะะ');
+            showHearts();
+            setTimeout(() => showFrame(7), 3000);
+        });
+        
+        document.getElementById('finalExit').addEventListener('click', () => {
+            alert('หึๆ ได้แค่ออกเกมส์แหละ ออกไปจากใจพ้มไม่ได้หรอกกกก');
+        });
+
+        function showHearts() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.innerHTML = '❤️';
+                    heart.style.left = `${Math.random() * 100}vw`;
+                    heart.style.top = `${Math.random() * 100}vh`;
+                    heart.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                    heart.style.animation = 'floatHeart 3s forwards';
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 3000);
+                }, Math.random() * 3000);
+            }
+        }
+
+        function startFireworks() {
+            const canvas = document.getElementById('fireworks');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            function Firework() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height;
+                this.sx = Math.random() * 3 - 1.5;
+                this.sy = Math.random() * -3 - 4;
+                this.size = Math.random() * 2 + 1;
+                this.shouldExplode = false;
+
+                this.update = function() {
+                    this.x += this.sx;
+                    this.y += this.sy;
+                    this.sy += 0.05;
+                    if (this.y <= canvas.height / 2) {
+                        this.shouldExplode = true;
+                    }
+                }
+
+                this.draw = function() {
+                    ctx.fillStyle = 'white';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function Particle(x, y) {
+                this.x = x;
+                this.y = y;
+                this.sx = Math.random() * 3 - 1.5;
+                this.sy = Math.random() * 3 - 1.5;
+                this.size = Math.random() * 2 + 1;
+                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                this.life = 100;
+
+                this.update = function() {
+                    this.x += this.sx;
+                    this.y += this.sy;
+                    this.life--;
+                }
+
+                this.draw = function() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            let fireworks = [];
+            let particles = [];
+
+            function animate() {
+                if (currentFrame !== 1) {
+                    requestAnimationFrame(animate);
+                    return;
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (Math.random() < 0.05) {
+                    fireworks.push(new Firework());
+                }
+
+                for (let i = fireworks.length - 1; i >= 0; i--) {
+                    fireworks[i].update();
+                    fireworks[i].draw();
+
+                    if (fireworks[i].shouldExplode) {
+                        for (let j = 0; j < 50; j++) {
+                            particles.push(new Particle(fireworks[i].x, fireworks[i].y));
+                        }
+                        fireworks.splice(i, 1);
+                    }
+                }
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    particles[i].update();
+                    particles[i].draw();
+
+                    if (particles[i].life <= 0) {
+                        particles.splice(i, 1);
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
